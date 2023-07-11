@@ -43,102 +43,100 @@ const classList = [
         id: '4',
         name: 'XDDD'
     }
-]
-// 
+];
+
+// ham lay ID
 function getClassNameById(id) {
-    return classList.find(function (el) {
-        return el.id === id;
+    return classList.find(student => {
+        return student.id == id
     }).name;
 }
-
-// Tạo danh sách sinh viên
+// Tao danh sach SV
 var listStudents = [];
-students.forEach(function (student) {
-    var classInfo = classList.find(function (el) {
-        return el.id === student.classId;
+students.forEach(student => {
+    var classInfo = classList.find(el => {
+        return el.id == student.classId
     });
-    var newStudent = {
+    var newstudents = {
         id: student.id,
         name: student.name,
         classId: classInfo.id,
         className: classInfo.name
-    };
-
-    listStudents.push(newStudent);
+    }
+    listStudents.push(newstudents)
 });
-console.log(listStudents);
 
 // man hinh hien thi
 function display(array) {
     var tableElement = document.getElementById('tbl')
-
-    // Tieu de
+    // tieu de
     var htmlTitle = `
-<thead>
-    <tr>
-        <th>Ten Sinh Vien</th>
-        <th>Lop</th>
-        <th>Chuc Nang</th>
-    </tr>
-</thead>
-`;
+    <thead>
+        <tr>
+            <th>Ten</th>
+            <th>Lop</th>
+            <th>Chuc Nang</th>
+        </tr>
+    </thead>
+    `;
     tableElement.innerHTML = htmlTitle;
     // Noi dung
-    var htmlBody = '<body>'
+    var htmlBody = '<body>';
     for (const student of array) {
-        var trElement = displaystudent(student);
-        htmlBody += trElement;
+        const conntent = displaystudent(student)
+        htmlBody += conntent;
     }
     htmlBody += '</body>'
     tableElement.innerHTML = htmlBody;
 }
 display(listStudents);
 function displaystudent(student) {
-    var htmls = `
+    const htmls = `
     <tr>
         <td>${student.name}</td>
         <td>${student.className}</td>
         <td>
-            <button onclick = "onUpdate('${student.id}')" > Sua</button>
-            <button onclick = "onDelete('${student.id}')"> Xoa </button>
+            <button onclick = onUpdate(${student.id})>SUA</button>
+            <button onclick = onDelete(${student.id})>XOA</button>
         </td>
     </tr>
     `;
     return htmls;
 };
-
-// Tạo danh sách lớp học
-var classSelectElement = document.querySelector('#class');
-var classOptions = '<option value="">-- Chọn lớp --</option>';
-classList.forEach(function (classInfo) {
-    classOptions += `<option value="${classInfo.id}">${classInfo.name}</option>`;
-});
+// Tao danh sach lop hoc
+var classSelectElement = document.getElementById('class');
+var classOptions = '<option value = "">-- Chuc nang --</option>'
+classList.forEach(classInfo => {
+    classOptions += `<option value = "${classInfo.id}">${classInfo.name}</option>`
+})
 classSelectElement.innerHTML = classOptions;
 
-// ********************
-var tenInput = document.querySelector('input[name="name"]');
-var lopInput = document.querySelector('select[name="class"]');
-var createButton = document.getElementById('create');
-const updateButton = document.getElementById('update');
+// ***********************
+var tenInput = document.querySelector('input[name = "name"]')
+var lopInput = document.querySelector('select[name = "class"]')
+var createButton = document.getElementById('create')
+var updateButton = document.getElementById('update')
 
+// ham kiem tra value nhap vao
 function handleBlurInput(input) {
-    var errorElement = input.parentElement.querySelector('.form-message');
+    var errorElement = input.parentElement.querySelector('.form-message')
     input.onblur = function () {
         if (input.value === '') {
             errorElement.setAttribute('style', 'color: red; font-style: italic')
-            errorElement.innerText = 'Vui long nhap';
+            errorElement.innerText = 'Vui long nhap'
         } else {
-            errorElement.innerText = ''
+            errorElement.innerText = '';
         }
-    }
-    input.oninput = function () {
-        errorElement.setAttribute('style', 'display: none')
+        input.oninput = function () {
+            errorElement.setAttribute('style', 'display: none')
+        }
     }
 }
 handleBlurInput(tenInput);
 handleBlurInput(lopInput);
 
-// ham` add student
+// Hàm add 
+
 function addStudents() {
     createButton.onclick = function (e) {
         e.preventDefault();
@@ -159,13 +157,13 @@ function addStudents() {
         lopInput.value = '';
     }
 }
-// Gắn sự kiện click cho nút Thêm
+// Gắn sự kiện click cho nút them
 createButton.addEventListener('click', addStudents());
 
-// ham` sua sinh vien
+// ham sua sv
 var idEd;
 function onUpdate(id) {
-    idEd = id;
+    idEd = id
     var editSt = listStudents.find(el => {
         return el.id == id
     })
@@ -174,50 +172,43 @@ function onUpdate(id) {
 
     updateButton.style.display = 'block';
     createButton.style.display = 'none';
-
 }
 function editStudent() {
-    const name = tenInput.value;
-    const lop = lopInput.value;
+    updateButton.onclick = function (e) {
+        e.preventDefault();
+        const ten = tenInput.value;
+        const lop = lopInput.value;
 
-    console.log(lop);
-    const student = {
-        id: idEd,
-        name: name,
-        classId: Number(lop),
-        className: getClassNameById(lop)
+        const newStudent = {
+            id: idEd,
+            name: ten,
+            classId: lop,
+            className: getClassNameById(lop)
+        };
+        var idx = listStudents.findIndex(el => {
+            return el.id == idEd
+        })
+        listStudents.splice(idx, 1, newStudent);
+
+        display(listStudents);
+
+
+        updateButton.style.display = 'none';
+        createButton.style.display = 'block';
+        tenInput.value = '';
+        lopInput.value = '';
     }
-
-    var idx = listStudents.findIndex(function (el) {
-        return el.id == idEd;
-    });
-    listStudents.splice(idx, 1, student);
-    // Hiển thị danh sách sinh viên   
-    display(listStudents)
-
-    // xoa noi dung input
-    tenInput.value = '';
-    lopInput.value = '';
-    // an nut
-    updateButton.style.display = 'none';
-    createButton.style.display = 'block';
 }
-
-// loại bỏ hành vi mặc định của trình duyệt
-updateButton.addEventListener('click', function (e) {
-    e.preventDefault();
-})
 // Gắn sự kiện click cho nút Sửa
-updateButton.addEventListener('click', editStudent);
-
+updateButton.addEventListener('click', editStudent());
+// ham xoa sinh vien
 function onDelete(id) {
-    var check = confirm("Bạn có chắc muốn xóa?");
+    var check = confirm('ban co that su muon xoa');
     if (check) {
         const idx = listStudents.findIndex(el => {
-            return el.id == id;
-        });
+            return el.id == id
+        })
         listStudents.splice(idx, 1);
-        console.log(listStudents);
         display(listStudents)
     }
 }
