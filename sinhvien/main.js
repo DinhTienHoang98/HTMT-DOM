@@ -24,27 +24,25 @@ const studentInput = document.getElementById('list-students');
 
 // Hàm kiểm tra input
 function handleBlurInput(input) {
-    const checkElement = input.parentElement.querySelector('.form-message');
-
+    const errorElement = input.parentElement.querySelector('.form-message')
+    console.log(errorElement);
     input.onblur = function () {
-        if (input.value.trim() === '') {
-            checkElement.setAttribute('style', 'color: red; font-style: italic');
-            checkElement.innerText = 'Vui lòng nhập';
-            input.classList.add('invalid');
+        if (input.value === '') {
+            errorElement.setAttribute('style', 'color: red;font-style: italic')
+            errorElement.innerText = 'Vui long nhap'
+            input.classList.add('invalid')
         } else {
-            checkElement.innerText = '';
-            input.classList.remove('invalid');
+            errorElement.innerText = '';
+            input.classList.remove('invalid')
         }
-    };
-
+    }
     input.oninput = function () {
-        checkElement.setAttribute('style', 'display: none');
-        input.classList.remove('invalid');
-    };
+        errorElement.setAttribute('style', 'display: none')
+        input.classList.remove('invalid')
+    }
 }
-
 handleBlurInput(nameElement);
-handleBlurInput(addressElement);
+handleBlurInput(addressElement)
 
 // Hàm thêm sinh viên mới vào danh sách
 function addStudent() {
@@ -74,6 +72,8 @@ function addStudent() {
     nameElement.value = '';
     addressElement.value = '';
 }
+
+// Hàm sửa sinh viên
 function editStudent() {
     const name = nameElement.value;
     const address = addressElement.value
@@ -93,11 +93,26 @@ function editStudent() {
     // Xóa nội dung ô input sau khi thêm sinh viên thành công
     nameElement.value = '';
     addressElement.value = '';
-
-    updateButton.setAttribute('style', 'display: none');
-    createButton.setAttribute('style', 'display: block');
+    // an nut sua va hien but them
+    updateButton.style.display = 'none';
+    createButton.style.display = 'block';
 
 }
+var idEd;
+function update(id) {
+    idEd = id;
+    var editSt = studentList.find(el => {
+        return el.id == id
+    })
+    console.log(editSt);
+    nameElement.value = editSt.name;
+    addressElement.value = editSt.address;
+
+    updateButton.style.display = 'block';
+    createButton.style.display = 'none';
+
+}
+// hàm xóa sinh viên
 function deleteSt(id) {
     var check = confirm('Bạn có chắc muốn xóa không?');
     if (check) {
@@ -108,6 +123,7 @@ function deleteSt(id) {
         displayStudents();
     }
 }
+
 // Gắn sự kiện click cho nút Thêm
 createButton.addEventListener('click', addStudent);
 
@@ -129,22 +145,4 @@ function displayStudents() {
 
     studentInput.innerHTML = html;
 }
-
 displayStudents();
-
-// chuc nang sua
-var idEd;
-function update(id) {
-    idEd = id;
-    var editSt = studentList.find(function (el) {
-        return el.id == id
-    });
-    console.log(editSt);
-
-    nameElement.value = editSt.name;
-    addressElement.value = editSt.address;
-
-    updateButton.setAttribute('style', 'display: block');
-    createButton.setAttribute('style', 'display: none');
-
-}
